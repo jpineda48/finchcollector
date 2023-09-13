@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Finch
 
 
@@ -17,7 +18,7 @@ def about(request):
 def finches_index(request):
   # We pass data to a template very much like we did in Express!
  finches = Finch.objects.all()
- print(finches)
+
  return render(request, 'finches/index.html', 
                {
                  'finches': finches
@@ -27,3 +28,18 @@ def finches_index(request):
 def finch_detail(request, finch_id):
   finch = Finch.objects.get(id=finch_id)
   return render(request, 'finches/details.html', { 'finch':finch })
+
+class FinchCreate(CreateView):
+  model = Finch
+  fields = '__all__'
+
+class FinchUpdate(UpdateView):
+    model = Finch
+    # Let's disallow the renaming of a cat by excluding the name field!
+    fields = '__all__'
+
+class FinchDelete(DeleteView):
+    model = Finch
+    success_url = '/finches'
+
+
