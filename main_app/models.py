@@ -21,7 +21,9 @@ class Finch(models.Model):
 class Migrations(models.Model):
     destination = models.CharField()
     departuredate = models.DateField()
-    stops = models.TextField(max_length=250)
+    stops = models.TextField('stops along the way',max_length=250)
+
+    
 
     finch = models.ForeignKey(Finch, on_delete=models.CASCADE)
 

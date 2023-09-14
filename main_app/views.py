@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Finch
+from .forms import MigrationsForm
 
 
 
@@ -27,7 +28,9 @@ def finches_index(request):
 
 def finch_detail(request, finch_id):
   finch = Finch.objects.get(id=finch_id)
-  return render(request, 'finches/details.html', { 'finch':finch })
+  migrations_form = MigrationsForm()
+  return render(request, 'finches/details.html', 
+        { 'finch':finch, 'migrations_form':migrations_form })
 
 class FinchCreate(CreateView):
   model = Finch
@@ -41,5 +44,15 @@ class FinchUpdate(UpdateView):
 class FinchDelete(DeleteView):
     model = Finch
     success_url = '/finches'
+
+def add_migrations(request, finch_id):
+  form = MigrationsForm(request.POST)
+
+  if form.is_valid():
+    new_migrations = form.save(commit=False)
+    new_migrations.finch_id = finch_id
+    new_migrations.save()
+  return redirect('detail', finch_id=finch_id)
+
 
 
